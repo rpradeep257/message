@@ -17,43 +17,42 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/message")
 public class MessageController {
-	
+
 	private MessageService messageService;
-	
+
 	@Autowired
 	public MessageController(MessageService messageService) {
-		this.messageService =  messageService;
+		this.messageService = messageService;
 	}
 
 	@GetMapping
 	public List<Message> get() {
 		return messageService.get();
 	}
-	
+
 	@GetMapping("/{id}")
 	public ResponseEntity<? extends Object> get(@PathVariable("id") Long id) {
 		Message message = messageService.get(id);
 		if (message == null) {
-			return new ResponseEntity<String>("Message not found",HttpStatus.NOT_FOUND);
+			return new ResponseEntity<String>("Message not found", HttpStatus.NOT_FOUND);
 		}
 		return ResponseEntity.ok(message);
 	}
-	
+
 	@PostMapping
 	public ResponseEntity<Long> create(@RequestBody Message message) {
 		Long id = messageService.create(message);
 		return new ResponseEntity<Long>(id, HttpStatus.CREATED);
 	}
-	
+
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> delete(@PathVariable("id") Long id) {
 		messageService.delete(id);
 		return new ResponseEntity<>("Message deleted", HttpStatus.OK);
 	}
-	
-	
+
 	@ExceptionHandler(MessageException.class)
-    public ResponseEntity<String> handleMessageException(MessageException exception) {
-        return new ResponseEntity<String>(exception.getMessage(), HttpStatus.BAD_REQUEST);
-    }
+	public ResponseEntity<String> handleMessageException(MessageException exception) {
+		return new ResponseEntity<String>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+	}
 }

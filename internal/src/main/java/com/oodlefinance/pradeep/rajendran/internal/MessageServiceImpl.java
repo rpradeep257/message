@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MessageServiceImpl implements MessageService {
-	
+
 	private Map<Long, Message> messages = new ConcurrentHashMap<>();
-	
-    private AtomicLong counter = new AtomicLong(0);
+
+	private AtomicLong counter = new AtomicLong(0);
 
 	@Override
 	public List<Message> get() {
