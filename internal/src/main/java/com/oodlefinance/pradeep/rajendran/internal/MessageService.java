@@ -11,5 +11,7 @@ public interface MessageService {
 	Long create(Message message);
 	
 	void delete(Long id);
+	
+	void clear();
 
 }

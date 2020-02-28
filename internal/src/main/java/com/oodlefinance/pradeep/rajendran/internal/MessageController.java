@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,13 +31,18 @@ public class MessageController {
 	}
 	
 	@GetMapping("/{id}")
-	public Message get(@PathVariable("id") Long id) {
-		return messageService.get(id);
+	public ResponseEntity<? extends Object> get(@PathVariable("id") Long id) {
+		Message message = messageService.get(id);
+		if (message == null) {
+			return new ResponseEntity<String>("Message not found",HttpStatus.NOT_FOUND);
+		}
+		return ResponseEntity.ok(message);
 	}
 	
 	@PostMapping
-	public Long create(@RequestBody Message message) {
-		return messageService.create(message);
+	public ResponseEntity<Long> create(@RequestBody Message message) {
+		Long id = messageService.create(message);
+		return new ResponseEntity<Long>(id, HttpStatus.CREATED);
 	}
 	
 	@DeleteMapping("/{id}")
@@ -46,4 +52,8 @@ public class MessageController {
 	}
 	
 	
+	@ExceptionHandler(MessageException.class)
+    public ResponseEntity<String> handleMessageException(MessageException exception) {
+        return new ResponseEntity<String>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }

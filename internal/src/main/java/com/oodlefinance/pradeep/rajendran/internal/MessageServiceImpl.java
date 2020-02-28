@@ -17,7 +17,7 @@ public class MessageServiceImpl implements MessageService {
 
 	@Override
 	public List<Message> get() {
-		return new ArrayList(messages.values());
+		return new ArrayList<>(messages.values());
 	}
 
 	@Override
@@ -27,6 +27,9 @@ public class MessageServiceImpl implements MessageService {
 
 	@Override
 	public Long create(Message message) {
+		if (message.getMessage().isEmpty()) {
+			throw new MessageException("Message is empty");
+		}
 		message.setId(counter.incrementAndGet());
 		messages.put(message.getId(), message);
 		return message.getId();
@@ -35,6 +38,11 @@ public class MessageServiceImpl implements MessageService {
 	@Override
 	public void delete(Long id) {
 		messages.remove(id);
+	}
+
+	@Override
+	public void clear() {
+		this.messages.clear();
 	}
 
 }
